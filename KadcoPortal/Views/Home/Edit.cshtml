@@ -1,0 +1,197 @@
+﻿@model KadcoPortal.ViewModels.CollectedBillViewModel
+@{
+    ViewBag.Title = "Edit";
+}
+<div class="ui container index-container">
+    <div id="mainTextContainer">
+        <h1 class="textbig">Edit @Model.collectedBill.PayerName</h1>
+    </div>
+
+    <hr />
+
+    <div class="ui card fluid">
+        <div class="header">
+            Update Bill
+        </div>
+        @using (Html.BeginForm("CreateNewBill", "Home", method: FormMethod.Post,
+            htmlAttributes: new { @class = "ui form container" }))
+        {
+            @Html.AntiForgeryToken()
+
+            //User inputs
+    <div class="three fields">
+        <div class="field">
+            <label>Payer name</label>
+
+            @Html.TextBoxFor(m => m.collectedBill.PayerName, "", new { @type = "text", @placeholder = Model.collectedBill.PhoneNumber })
+        </div>
+
+        <div class="field">
+            <label>Phone Number</label>
+
+            @Html.TextBoxFor(m => m.collectedBill.PhoneNumber, "", new { @class = "ui input", @type = "text", @placeholder = Model.collectedBill.PhoneNumber })
+        </div>
+        <div class="field">
+            <label>Payment Code</label>
+
+            @Html.TextBoxFor(m => m.collectedBill.PaymentCode, "", new { @type = "text", @placeholder = Model.collectedBill.PaymentCode })
+        </div>
+    </div>
+
+            //Bill inputs
+            <div class="three fields">
+                <div class="field">
+                    <label>Bill Date</label>
+
+                    @Html.TextBoxFor(m => m.collectedBill.BillDate, "", new { @type = "date", @placeholder = Model.collectedBill.BillDate })
+
+                </div>
+
+                <div class="field">
+                    <label>Currency Name</label>
+
+                    @Html.TextBox("CurrencyName", "", new { @type = "text", @placeholder = "Currency Name" })
+                </div>
+                <div class="field">
+                    <label>Currency Rate</label>
+
+                    @Html.TextBoxFor(m => m.collectedBill.ExchangeRate, "", new { @type = "number", @placeholder = Model.collectedBill.ExchangeRate })
+                </div>
+
+            </div>
+
+            //Cash inputs
+            <div class="three fields">
+                <div class="field">
+                    <label>GFS Code</label>
+                    @if ((@Model.collectedBill.GFS_CodeId != null) && (@Model.collectedBill.GFS_CodeId > 0))
+                    {
+
+                        @Html.DropDownListFor(m => m.collectedBill.GFS_CodeId,
+                      new SelectList(Model.gFSCodes, "id", "CodeNumber"), "--" + Model.collectedBill.GFSCodeStr + "--",
+                      new { @class = "ui dropdown" })
+
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(m => m.collectedBill.GFS_CodeId,
+                      new SelectList(Model.gFSCodes, "id", "CodeNumber"), "--Select GFS Code--",
+                      new { @class = "ui dropdown" })
+
+                    }
+
+
+
+
+                </div>
+
+                <div class="field">
+                    <label>Amount</label>
+
+                    @Html.TextBoxFor(m => m.collectedBill.Amount, "", new { @type = "number", @placeholder = Model.collectedBill.Amount })
+                </div>
+
+                <div class="field">
+                    <label>Total Amount</label>
+                    @Html.TextBoxFor(m => m.collectedBill.TotalAmount, "", new { @class = "disabled", @type = "number", @placeholder = Model.collectedBill.TotalAmount })
+                </div>
+
+            </div>
+
+            //Control Numbers
+            <div class="three fields">
+                <div class="field">
+                    <label>Control Number</label>
+
+                    @Html.TextBoxFor(m => m.collectedBill.ControlNo, "", new { @id = "controlNumField", @type = "text", @placeholder = Model.collectedBill.ControlNo })
+
+                </div>
+
+                <div class="field">
+                    <label>.</label>
+
+                    <a class="ui right labeled icon button btnControlNo" id=@Model.collectedBill.id href="@Url.Action("GetControlNo", "Home", new { @id = Model.collectedBill.id })">
+                        Request Control Number
+                        <i class="right refresh icon"></i>
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="field">
+                <label>Description</label>
+
+                @Html.TextAreaFor(m => m.collectedBill.Description, new { @rows = "2" })
+
+                @Html.Hidden("hiddenID", Model.collectedBill.id)
+            </div>
+
+            <div class="actions">
+                @*<div class="ui black deny button">
+                        Discard
+                    </div>*@
+                <button type="submit" class="ui positive button">
+                    Update Bill
+                </button>
+            </div>
+
+
+        }
+    </div>
+
+</div>
+
+<style>
+
+    .textBig {
+        font-size: 60px;
+    }
+
+    .index-container {
+        padding: 20px;
+        height: 90vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-content: space-around;
+    }
+
+    #mainTextContainer {
+        text-align: center;
+        padding: 10px;
+    }
+
+    #billIstHeader {
+    }
+
+    .fields {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    .bill-action-container {
+        padding-top: 2%;
+        display: flex;
+    }
+
+    #billSearch {
+        flex-grow: 2;
+    }
+
+    #billNew {
+        flex-grow: 1;
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-end
+    }
+
+    #newBill {
+        align-self: flex-end;
+    }
+</style>
+
+
+
+

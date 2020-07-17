@@ -1,0 +1,7 @@
+https://laracasts.com/discuss/channels/elixir/semantic-ui-integration
+
+https://semantic-ui.com/introduction/getting-started.html
+
+https://www.youtube.com/watch?v=zvt8ff3d63Q
+
+https://github.com/nandotorres/SemanticUI.ASP.NET.MVC

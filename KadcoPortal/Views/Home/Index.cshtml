@@ -1,0 +1,329 @@
+﻿@model KadcoPortal.ViewModels.CollectedBillViewModel
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="ui container index-container">
+    <div id="mainTextContainer">
+        <h1 class="textBig">KADCO PORTAL</h1>
+        <p class="lead">Create a New Bill, Request for Control Number and Post to Sage.</p>
+    </div>
+
+    @* Bill Modal *@
+
+    <div class="ui modal">
+
+        <i class="close icon"></i>
+        <div class="header">
+            New Bill
+        </div>
+        @using (Html.BeginForm("CreateNewBill", "Home", method: FormMethod.Post, htmlAttributes: new { @class = "ui form" }))
+        {
+            @Html.AntiForgeryToken()
+
+            //User inputs
+            <div class="three fields row">
+                <div class="field">
+                    <label>Payer name</label>
+                   
+                    @Html.TextBoxFor(m => m.collectedBill.PayerName, "", new { @class="ui input", @type = "text", @placeholder = "Payer Name" })
+                </div>
+                <div class="field">
+                    <label>Phone Number</label>
+                 
+                    @Html.TextBoxFor(m => m.collectedBill.PhoneNumber, "", new { @class="ui input", @type = "text", @placeholder = "Phone Number" })
+                </div>
+                <div class="field">
+                    <label>Payment Code</label>
+                    @*<input type="text" placeholder="Payment Code">*@
+                    @Html.TextBoxFor(m => m.collectedBill.PaymentCode, "", new { @class="ui input", @type = "text", @placeholder = "Payment Code" })
+                </div>
+            </div>
+
+            //Bill inputs
+            <div class="three fields">
+                <div class="field">
+                    <label>Bill Date</label>
+
+                    @Html.TextBoxFor(m => m.collectedBill.BillDate, "", new { @type = "date" })
+
+                </div>
+
+                <div class="field">
+                    <label>Currency Name</label>
+
+                    @Html.TextBox("CurrencyName", "", new { @type = "text", @placeholder = "Currency Name" })
+                </div>
+                <div class="field">
+                    <label>Currency Rate</label>
+
+                    @Html.TextBoxFor(m => m.collectedBill.ExchangeRate, "", new { @type = "number", @placeholder = "Exchange Rate" })
+                </div>
+                @*<div class="field">
+                        <label>Rate</label>
+                        <input type="text" placeholder="Payment Code">
+                    </div>*@
+            </div>
+
+            //Cash inputs
+            <div class="two fields">
+                <div class="field">
+                    <label>GFS Code</label>
+
+                    @*@Html.TextBoxFor(m => m.collectedBill.GFSCodeStr, "", new { @type = "text", @placeholder = "GFS Code" })*@
+                    @Html.DropDownListFor(m => m.collectedBill.GFS_CodeId,
+                   new SelectList(Model.gFSCodes, "id", "CodeNumber"), "--Select GFS Code--",
+                   new { @class = "ui dropdown" })
+
+                </div>
+
+                <div class="field">
+                    <label>Amount</label>
+
+                    @Html.TextBoxFor(m => m.collectedBill.Amount, "", new { @type = "number", @placeholder = "Amount Paid" })
+                </div>
+
+                @*<div class="field">
+                        <label>Total Amount</label>
+                        @Html.TextBoxFor(m => m.collectedBill.TotalAmount, "", new { @type = "number", @placeholder = "Total Amount" })
+                    </div>*@
+
+            </div>
+
+            <div class="field">
+                <label>Description</label>
+
+                @Html.TextAreaFor(m => m.collectedBill.Description, new { @rows = "2" })
+
+                @Html.Hidden("hiddenID", Model.collectedBill.id)
+            </div>
+
+            <div class="actions">
+                <div class="ui black deny button">
+                    Discard
+                </div>
+                <button type="submit" class="ui positive button">
+                    Create Bill
+                </button>
+            </div>
+
+
+        }
+    </div>
+
+    @* Bill Modal End *@
+
+
+    @* New Bill *@
+    <div class="row">
+        <div class="bill-action-container ">
+
+            <div id="billSearch">
+                @*<div class="ui icon input">
+                        <input id="billSearchInput" type="text" placeholder="Search...">
+                        <i class="search icon"></i>
+                    </div>*@
+
+            </div>
+
+            <div id="billNew">
+                <button id="newBill" type="button" class="ui basic primary button">
+                    <i class="icon file alternate"></i>
+                    New Bill
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    @* Bill Data *@
+
+    <div id="billData" class="ui card fluid">
+        <table class="ui celled striped table fluid">
+            <thead>
+                <tr>
+                    <th>
+                        Recent Bills
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        @* Data Table *@
+                        <table class="ui very basic celled striped table" id="billTable">
+                            <thead>
+                                <tr id="billIstHeader" class="ui very basic celled table">
+                                    <th>Date</th>
+                                    <th>Payer Name</th>
+                                    <th>Phone Number</th>
+                                    <th>Bill Date</th>
+                                    <th>GFS Desc</th>
+                                    <th>Control No.</th>
+                                    @*<th><i class="attention icon"></i>Status</th>*@
+                                    <th>View</th>
+                                    <th>Delete</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.collectedBills.Count() <= 0)
+                                {
+                                <tr>
+                                    <td class="bill-item"></td>
+                                    <td class="bill-item"></td>
+                                    <td class="bill-item"></td>
+                                    <td class="bill-item"></td>
+                                    <td class="bill-item">No Records at the Moment.</td>
+                                    <td class="bill-item"></td>
+                                    @*<td class="bill-item">Engineer</td>*@
+                                    <td class="bill-item"></td>
+                                    <td class="bill-item"></td>
+                                </tr>
+                                }
+                                @foreach (var bill in Model.collectedBills)
+                                {
+                                    <tr class="ui fluid">
+                                        <td class="bill-item">@bill.CreatedDate</td>
+                                        <td class="bill-item">@bill.PayerName</td>
+                                        <td class="bill-item">@bill.PhoneNumber</td>
+                                        <td class="bill-item">@bill.BillDate</td>
+                                        <td class="bill-item">@bill.GFSCodeStr</td>
+                                        <td class="bill-item">
+
+                                            @if (string.IsNullOrEmpty(bill.ControlNo) || string.IsNullOrWhiteSpace(bill.ControlNo))
+                                            {
+                                                <a class="ui right labeled icon button btnControlNo" id=@bill.id href="@Url.Action("GetControlNo", "Home", new { @id = bill.id })">
+                                                    Request
+                                                    <i class="right refresh icon"></i>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                @bill.ControlNo
+                                            }
+                                        </td>
+                                        @*<td class="bill-item">Engineer</td>*@
+                                        <td class="bill-item">
+                                            <a id="newBill" href="@Url.Action("Edit", "Home", new { @id = bill.id })" class="ui basic">
+                                                <i class="icon pencil"></i>
+                                                Edit
+                                            </a>
+                                        </td>
+                                        <td class="bill-item">
+                                            <a id="deleteBill" href="@Url.Action("DeleteBill", "Home", new { @id = bill.id })" class="ui basic">
+                                                <i class="icon trash"></i>
+
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+
+
+                            </tbody>
+                        </table>
+                    </td>
+
+                </tr>
+
+                @*<tr>
+                        <td>
+                            <div class="actions">
+                                <div class="ui positive button">
+                                    Export to Sage
+                                </div>
+                            </div>
+                        </td>
+                    </tr>*@
+
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+<style>
+
+    .textBig {
+        font-size: 60px;
+    }
+
+    .index-container {
+        padding: 20px;
+        height: 90vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-content: space-around;
+    }
+
+    #mainTextContainer {
+        text-align: center;
+        padding: 10px;
+    }
+
+    #billIstHeader {
+    }
+
+    .fields {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    .bill-action-container {
+        padding-top: 2%;
+        display: flex;
+    }
+
+    #billSearch {
+        flex-grow: 2;
+    }
+
+    #billNew {
+        flex-grow: 1;
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-end
+    }
+
+    #newBill {
+        align-self: flex-end;
+    }
+</style>
+
+@*<script type="text/javascript">
+        //Init jQuery
+        $(document).ready(function () {
+            $('#billTable').DataTable();
+
+            //New Bill Btn Click
+            $('#newBill').on('click', function () {
+                debugger
+                $('.ui.modal').modal('show');
+            });
+        });
+    </script>*@
+
+
+    <script type="text/javascript">
+        $(document).ready(() => {
+             //alert('Test');
+            //Data Table
+            $('#billTable').DataTable({
+                "pageLength": 3
+            });
+
+            $('#billTable').on( 'click', 'tbody td', function () {
+              if ( table.data().length !== 0 ) {
+                editor.inline( this );
+              }
+            } );
+
+
+            //
+            $('#newBill').on('click', () => {
+                $('.ui.modal').modal('show');
+            });
+        });
+    </script>
