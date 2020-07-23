@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.202
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KadcoMain", "KadcoMain\KadcoMain.csproj", "{11362EBD-EFC3-4E9C-81DB-F5B5908ACDA4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{11362EBD-EFC3-4E9C-81DB-F5B5908ACDA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11362EBD-EFC3-4E9C-81DB-F5B5908ACDA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11362EBD-EFC3-4E9C-81DB-F5B5908ACDA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11362EBD-EFC3-4E9C-81DB-F5B5908ACDA4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7C1B4B1E-E655-4282-B1E9-68C7003706A1}
+	EndGlobalSection
+EndGlobal
