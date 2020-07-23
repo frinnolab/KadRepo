@@ -43,7 +43,7 @@
                 <div class="field">
                     <label>Bill Date</label>
 
-                    @Html.TextBoxFor(m => m.collectedBill.BillDate, "", new { @type = "date", @placeholder = Model.collectedBill.BillDate })
+                    @Html.TextBoxFor(m => m.collectedBill.BillDate, "{0:D MMM YYYY}", new { @type = "date", @placeholder = Model.collectedBill.BillDate })
 
                 </div>
 

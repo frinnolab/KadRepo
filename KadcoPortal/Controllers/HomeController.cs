@@ -173,6 +173,12 @@ namespace KadcoPortal.Controllers
 
             var dbNum = 0;
 
+            //if (controlNumberUpdate.ControlNo != null)
+            //{
+            //    var a = 0;
+            //    return Json(controlNumberUpdate, JsonRequestBehavior.AllowGet);
+            //}
+
             return RedirectToAction("Index");
         }
 

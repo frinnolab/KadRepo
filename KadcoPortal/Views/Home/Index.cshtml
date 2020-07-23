@@ -35,7 +35,7 @@
                 </div>
                 <div class="field">
                     <label>Payment Code</label>
-                    @*<input type="text" placeholder="Payment Code">*@
+                   
                     @Html.TextBoxFor(m => m.collectedBill.PaymentCode, "", new { @class="ui input", @type = "text", @placeholder = "Payment Code" })
                 </div>
             </div>
@@ -45,7 +45,7 @@
                 <div class="field">
                     <label>Bill Date</label>
 
-                    @Html.TextBoxFor(m => m.collectedBill.BillDate, "", new { @type = "date" })
+                    @Html.TextBoxFor(m => m.collectedBill.BillDate, "{0:DD MMM YYYY}", new { @type = "date" })
 
                 </div>
 
@@ -193,7 +193,8 @@
 
                                             @if (string.IsNullOrEmpty(bill.ControlNo) || string.IsNullOrWhiteSpace(bill.ControlNo))
                                             {
-                                                <a class="ui right labeled icon button btnControlNo" id=@bill.id href="@Url.Action("GetControlNo", "Home", new { @id = bill.id })">
+                                                //href="@Url.Action("GetControlNo", "Home", new { @id = bill.id })"
+                                                <a class="ui right labeled icon button btnControlNo" id=@bill.id href="@Url.Action("GetControlNo", "Home", new { @id = bill.id })" >
                                                     Request
                                                     <i class="right refresh icon"></i>
                                                 </a>
@@ -292,21 +293,14 @@
     }
 </style>
 
-@*<script type="text/javascript">
-        //Init jQuery
-        $(document).ready(function () {
-            $('#billTable').DataTable();
-
-            //New Bill Btn Click
-            $('#newBill').on('click', function () {
-                debugger
-                $('.ui.modal').modal('show');
-            });
-        });
-    </script>*@
-
-
     <script type="text/javascript">
+        var xhr = new XMLHttpRequest();
+
+        //Control Button
+        var controlBtn = document.querySelector(".btnControlNo").id;
+
+        
+       
         $(document).ready(() => {
              //alert('Test');
             //Data Table
