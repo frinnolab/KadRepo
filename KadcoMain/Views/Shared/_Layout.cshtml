@@ -18,23 +18,20 @@
 <body>
     <div class="ui menu inverted">
         @Html.ActionLink("KADCO PORTAL", "Index", "Home", new { area = "" }, new { @class = "header item" })
-        <div class="ui menu inverted">
-            @Html.ActionLink("Abby", "About", "Home", new { @class = "item" })
-            @Html.ActionLink("Conny", "Contact", "Home", new { @class = "item" })
-        </div>
+        @*@Html.ActionLink("Abby", "About", "Home", new { @class = "item" })
+        @Html.ActionLink("Conny", "Contact", "Home", new { @class = "item" })*@
     </div>
 
     <div class="ui container grid">
         @RenderBody()
-        <footer>
+        @*<footer>
             <p>&copy; @DateTime.Now.Year - KADCO PORTAL</p>
-        </footer>
+        </footer>*@
     </div>
 
     @Scripts.Render("~/Content/SemanticUI/semantic.min.js")
     @*<script src="~/Scripts/jquery-3.5.1.js"></script>*@
     @*<script src="~/Scripts/jquery.validate.js"></script>*@
-
 
     @*<script src="~/Scripts/semantic.min.js"></script>*@
 
@@ -49,3 +46,4 @@
         background:rgba(203, 202, 202, 0.83);
     }
 </style>
+    

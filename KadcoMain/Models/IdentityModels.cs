@@ -23,6 +23,7 @@ namespace KadcoMain.Models
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
+            Database.SetInitializer(new NullDatabaseInitializer<ApplicationDbContext>());
         }
 
         public static ApplicationDbContext Create()
@@ -34,7 +35,7 @@ namespace KadcoMain.Models
 
         public DbSet<ControlNo> ControlNumbers { get; set; }
 
-        public DbSet<ExchangeRate> ExchangeRates { get; set; }
+        public DbSet<Currency> Currencies { get; set; }
 
         public DbSet<GFSCode> GFSCodes { get; set; }
 

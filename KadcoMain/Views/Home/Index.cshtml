@@ -11,105 +11,116 @@
 
     @* Bill Modal *@
 
-    <div class="ui modal">
+<div class="ui modal">
 
-        <i class="close icon"></i>
-        <div class="header">
-            New Bill
+    <i class="close icon"></i>
+    <div class="header">
+        New Bill
+    </div>
+    @using (Html.BeginForm("CreateNewBill", "Home", method: FormMethod.Post, htmlAttributes: new { @class = "ui form" }))
+    {
+        @Html.AntiForgeryToken()
+
+        //User inputs
+        <div class="three fields row">
+            <div class="field">
+                <label>Payer name</label>
+
+                @Html.TextBoxFor(m => m.collectedBill.PayerName, "", new { @class = "ui input", @type = "text", @placeholder = "Payer Name" })
+            </div>
+            <div class="field">
+                <label>Phone Number</label>
+
+                @Html.TextBoxFor(m => m.collectedBill.PhoneNumber, "", new { @class = "ui input", @type = "text", @placeholder = "Phone Number" })
+            </div>
+            <div class="field">
+                <label>Payment Code</label>
+
+                @Html.TextBoxFor(m => m.collectedBill.PaymentCode, "", new { @class = "ui input", @type = "text", @placeholder = "Payment Code" })
+            </div>
         </div>
-        @using (Html.BeginForm("CreateNewBill", "Home", method: FormMethod.Post, htmlAttributes: new { @class = "ui form" }))
-        {
-            @Html.AntiForgeryToken()
 
-            //User inputs
-            <div class="three fields row">
-                <div class="field">
-                    <label>Payer name</label>
-                   
-                    @Html.TextBoxFor(m => m.collectedBill.PayerName, "", new { @class="ui input", @type = "text", @placeholder = "Payer Name" })
-                </div>
-                <div class="field">
-                    <label>Phone Number</label>
-                 
-                    @Html.TextBoxFor(m => m.collectedBill.PhoneNumber, "", new { @class="ui input", @type = "text", @placeholder = "Phone Number" })
-                </div>
-                <div class="field">
-                    <label>Payment Code</label>
-                   
-                    @Html.TextBoxFor(m => m.collectedBill.PaymentCode, "", new { @class="ui input", @type = "text", @placeholder = "Payment Code" })
-                </div>
-            </div>
 
-            //Bill inputs
-            <div class="three fields">
-                <div class="field">
-                    <label>Bill Date</label>
 
-                    @Html.TextBoxFor(m => m.collectedBill.BillDate, "{0:DD MMM YYYY}", new { @type = "date" })
+        //Cash inputs
+        <div class="two fields">
+            <div class="field">
+                <label>GFS Code</label>
 
-                </div>
-
-                <div class="field">
-                    <label>Currency Name</label>
-
-                    @Html.TextBox("CurrencyName", "", new { @type = "text", @placeholder = "Currency Name" })
-                </div>
-                <div class="field">
-                    <label>Currency Rate</label>
-
-                    @Html.TextBoxFor(m => m.collectedBill.ExchangeRate, "", new { @type = "number", @placeholder = "Exchange Rate" })
-                </div>
-                @*<div class="field">
-                        <label>Rate</label>
-                        <input type="text" placeholder="Payment Code">
-                    </div>*@
-            </div>
-
-            //Cash inputs
-            <div class="two fields">
-                <div class="field">
-                    <label>GFS Code</label>
-
-                    @*@Html.TextBoxFor(m => m.collectedBill.GFSCodeStr, "", new { @type = "text", @placeholder = "GFS Code" })*@
-                    @Html.DropDownListFor(m => m.collectedBill.GFS_CodeId,
-                   new SelectList(Model.gFSCodes, "id", "CodeNumber"), "--Select GFS Code--",
-                   new { @class = "ui dropdown" })
-
-                </div>
-
-                <div class="field">
-                    <label>Amount</label>
-
-                    @Html.TextBoxFor(m => m.collectedBill.Amount, "", new { @type = "number", @placeholder = "Amount Paid" })
-                </div>
-
-                @*<div class="field">
-                        <label>Total Amount</label>
-                        @Html.TextBoxFor(m => m.collectedBill.TotalAmount, "", new { @type = "number", @placeholder = "Total Amount" })
-                    </div>*@
+                @Html.DropDownListFor(m => m.collectedBill.GFS_CodeId,
+               new SelectList(Model.gFSCodes, "id", "CodeNumber"), "--Select GFS Code--",
+               new { @class = "ui dropdown" })
 
             </div>
 
             <div class="field">
-                <label>Description</label>
-
-                @Html.TextAreaFor(m => m.collectedBill.Description, new { @rows = "2" })
-
-                @Html.Hidden("hiddenID", Model.collectedBill.id)
+                <label>GFS Description</label>
+                @Html.TextBoxFor(m => m.collectedBill.GFS_Description, "", new { @type = "text", @placeholder = "GFS Description" })
             </div>
 
-            <div class="actions">
-                <div class="ui black deny button">
-                    Discard
-                </div>
-                <button type="submit" class="ui positive button">
-                    Create Bill
-                </button>
+            <div class="field">
+                <label>Amount Paid</label>
+
+                @Html.TextBoxFor(m => m.collectedBill.Amount, "", new { @type = "number", @placeholder = "Amount Paid", @value = 0, onchange = "amountChange()" })
+            </div>
+        </div>
+
+        //Bill inputs
+        <div class="three fields">
+            <div class="field">
+                <label>Bill Date</label>
+
+                @Html.TextBoxFor(m => m.collectedBill.BillDate, "{0:DD MMM YYYY}", new { @type = "date" })
+
             </div>
 
+            <div class="field">
+                <label>Currency</label>
 
-        }
-    </div>
+                @Html.DropDownListFor(m => m.collectedBill.Currency_id,
+                   new SelectList(Model.Currencies, "id", "Country"), "--Select Currency--",
+                   new { @class = "ui dropdown curr-d-d", onchange = "getCurrencyRate()" })
+            </div>
+            <div class="field">
+                <label>Currency Rate</label>
+
+                @Html.TextBox("currRateTxt", "Currency Rate", new { @id = "currRateTxt" })
+            </div>
+            @*<div class="field">
+                    <label>Rate</label>
+                    <input type="text" placeholder="Payment Code">
+                </div>*@
+        </div>
+
+        <div class="field">
+            <label>Total Amount (TZS)</label>
+            @Html.TextBoxFor(m => m.collectedBill.TotalAmount, "", new { @type = "number", @placeholder = "Total Amount Paid", @value = 0 })
+
+
+            <p></p>
+
+        </div>
+
+        <div class="field">
+            <label>Description</label>
+
+            @Html.TextAreaFor(m => m.collectedBill.Description, new { @rows = "2" })
+
+            @Html.Hidden("hiddenID", Model.collectedBill.id)
+        </div>
+
+        <div class="actions">
+            <div class="ui black deny button">
+                Discard
+            </div>
+            <button type="submit" class="ui positive button">
+                Create Bill
+            </button>
+        </div>
+
+
+    }
+</div>
 
     @* Bill Modal End *@
 
@@ -169,17 +180,17 @@
                             <tbody>
                                 @if (Model.collectedBills.Count() <= 0)
                                 {
-                                <tr>
-                                    <td class="bill-item"></td>
-                                    <td class="bill-item"></td>
-                                    <td class="bill-item"></td>
-                                    <td class="bill-item"></td>
-                                    <td class="bill-item">No Records at the Moment.</td>
-                                    <td class="bill-item"></td>
-                                    @*<td class="bill-item">Engineer</td>*@
-                                    <td class="bill-item"></td>
-                                    <td class="bill-item"></td>
-                                </tr>
+                                    <tr>
+                                        <td class="bill-item"></td>
+                                        <td class="bill-item"></td>
+                                        <td class="bill-item"></td>
+                                        <td class="bill-item"></td>
+                                        <td class="bill-item">No Records at the Moment.</td>
+                                        <td class="bill-item"></td>
+                                        @*<td class="bill-item">Engineer</td>*@
+                                        <td class="bill-item"></td>
+                                        <td class="bill-item"></td>
+                                    </tr>
                                 }
                                 @foreach (var bill in Model.collectedBills)
                                 {
@@ -194,7 +205,12 @@
                                             @if (string.IsNullOrEmpty(bill.ControlNo) || string.IsNullOrWhiteSpace(bill.ControlNo))
                                             {
                                                 //href="@Url.Action("GetControlNo", "Home", new { @id = bill.id })"
-                                                <a class="ui right labeled icon button btnControlNo" id=@bill.id href="@Url.Action("GetControlNo", "Home", new { @id = bill.id })" >
+
+                                                @*<a class="ui right labeled icon button btnControlNo" id=@bill.id href="@Url.Action("GetControlNo", "Home", new { @id = bill.id })">
+                                            Request
+                                            <i class="right refresh icon"></i>
+                                        </a>*@
+                                                <a class="ui right labeled icon button btnControlNo" id=@bill.id href="@Url.Action("SaveToSage", "Home", new { @id = bill.id })">
                                                     Request
                                                     <i class="right refresh icon"></i>
                                                 </a>
@@ -227,15 +243,15 @@
 
                 </tr>
 
-                @*<tr>
-                        <td>
-                            <div class="actions">
-                                <div class="ui positive button">
-                                    Export to Sage
-                                </div>
+                <tr>
+                    <td>
+                        <div class="actions">
+                            <div class="ui positive button" id="postToSageBtn">
+                                Post to Sage
                             </div>
-                        </td>
-                    </tr>*@
+                        </div>
+                    </td>
+                <tr>
 
             </tbody>
 
@@ -293,14 +309,7 @@
     }
 </style>
 
-    <script type="text/javascript">
-        var xhr = new XMLHttpRequest();
-
-        //Control Button
-      //  var controlBtn = document.querySelector(".btnControlNo").id;
-
-        
-       
+    <script type="text/javascript"> 
         $(document).ready(() => {
              //alert('Test');
             //Data Table
@@ -320,4 +329,41 @@
                 $('.ui.modal').modal('show');
             });
         });
+
+        
+        //process currency rate 
+        var totalAmountTxt = document.querySelector("#collectedBill_TotalAmount");
+        var amount;
+        function amountChange() {
+            amount = document.querySelector("#collectedBill_Amount").value;
+
+         }
+        
+
+        function getCurrencyRate() {
+
+            var currId = document.querySelector("#collectedBill_Currency_id").value;
+            var url = "/Home/GetCurrRate/" + currId;
+
+            fetch(url)
+                .then(Result => {
+                    return Result.json();
+                })
+                .then(data => {
+                    var currText = document.querySelector("#currRateTxt");
+                    var totalAmount;
+                    currText.setAttribute("value", data);
+
+                    totalAmount = parseFloat(data) * parseFloat(amount);
+
+                    totalAmountTxt.setAttribute("value", totalAmount);
+                    totalAmountTxt.setAttribute("placeholder", totalAmount);
+
+                    
+
+                });
+            
+        }
+
+         //Post to Sage       
     </script>

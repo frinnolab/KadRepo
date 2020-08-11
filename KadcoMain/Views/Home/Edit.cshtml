@@ -43,7 +43,7 @@
                 <div class="field">
                     <label>Bill Date</label>
 
-                    @Html.TextBoxFor(m => m.collectedBill.BillDate, "{0:D MMM YYYY}", new { @type = "date", @placeholder = Model.collectedBill.BillDate })
+                    @Html.EditorFor(m => m.collectedBill.BillDate)
 
                 </div>
 
@@ -103,12 +103,24 @@
                 <div class="field">
                     <label>Control Number</label>
 
-                    @Html.TextBoxFor(m => m.collectedBill.ControlNo, "", new { @id = "controlNumField", @type = "text", @placeholder = Model.collectedBill.ControlNo })
+                    @if (Model.collectedBill.ControlNo != null)
+                    {
+                        @Html.TextBoxFor(m => m.collectedBill.ControlNo, "", new { @id = "controlNumField", @type = "text", @placeholder = Model.collectedBill.ControlNo })
+                    }
+
+                    @Html.TextBoxFor(m => m.collectedBill.ControlNo, "", new { @id = "controlNumField", @type = "text", @placeholder = "Nill" })
+
+
 
                 </div>
 
                 <div class="field">
                     <label>.</label>
+
+                    @if (Model.collectedBill.ControlNo != null)
+                    {
+                        //@Html.TextBox("", "", new { @display=none})
+                    }
 
                     <a class="ui right labeled icon button btnControlNo" id=@Model.collectedBill.id href="@Url.Action("GetControlNo", "Home", new { @id = Model.collectedBill.id })">
                         Request Control Number

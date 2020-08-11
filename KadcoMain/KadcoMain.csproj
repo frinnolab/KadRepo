@@ -47,6 +47,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ACCPAC.Advantage, Version=6.5.0.30, Culture=neutral, PublicKeyToken=4d7048ecf2312a7c, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_32\ACCPAC.Advantage\v4.0_6.5.0.30__4d7048ecf2312a7c\ACCPAC.Advantage.dll</HintPath>
+    </Reference>
+    <Reference Include="ACCPAC.Advantage.COMSVR.Interop, Version=6.5.0.30, Culture=neutral, PublicKeyToken=4d7048ecf2312a7c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_MSIL\ACCPAC.Advantage.COMSVR.Interop\v4.0_6.5.0.30__4d7048ecf2312a7c\ACCPAC.Advantage.COMSVR.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="ACCPAC.Advantage.Types, Version=6.5.0.30, Culture=neutral, PublicKeyToken=4d7048ecf2312a7c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_MSIL\ACCPAC.Advantage.Types\v4.0_6.5.0.30__4d7048ecf2312a7c\ACCPAC.Advantage.Types.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -170,6 +183,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Global.asax.cs">
@@ -178,12 +192,13 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CollectedBill.cs" />
     <Compile Include="Models\ControlNo.cs" />
-    <Compile Include="Models\ExchangeRate.cs" />
+    <Compile Include="Models\Currency.cs" />
     <Compile Include="Models\GFSCode.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PaymentCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\SageLogger.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\CollectedBillViewModel.cs" />
   </ItemGroup>
@@ -302,6 +317,7 @@
     <Content Include="Scripts\umd\popper-utils.min.js" />
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
+    <Content Include="TextFile1.txt" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -350,6 +366,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Admin\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -361,6 +378,17 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="ACCPACXAPILib">
+      <Guid>{975D7AC5-8871-11D1-B5A5-0060083B07C8}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>1</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -13,7 +13,8 @@ namespace KadcoMain.Models
 
         public DateTime? CreatedDate { get; set; }
 
-        [Display(Name = "Bill Date")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? BillDate { get; set; }
 
         [Display(Name = "Payer Name")]
@@ -23,8 +24,8 @@ namespace KadcoMain.Models
         public string PhoneNumber { get; set; }
 
         [Display(Name = "Exchange Rate")]
-        public decimal ExchangeRate { get; set; }
-        //public int? ExchangeRateId { get; set; }
+        public Currency Currency { get; set; }
+        public int? Currency_id { get; set; }
 
         [Display(Name = "GFS Code")]
         public GFSCode gFS { get; set; }
@@ -32,15 +33,16 @@ namespace KadcoMain.Models
         public string GFSCodeStr { get; set; }
 
 
+        [Display(Name = "GFS Description")]
+        public string GFS_Description { get; set; }
+
 
         //[Display(Name = "Payment Code")]
         public string PaymentCode { get; set; }
-        //public int? PaymentCodeId { get; set; }
 
 
         [Display(Name = "Control No.")]
         public string ControlNo { get; set; }
-        //public int? ControlNoID { get; set; }
 
         [Display(Name = "Amount")]
         public decimal Amount { get; set; }

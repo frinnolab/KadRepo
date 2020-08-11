@@ -5,7 +5,7 @@ using System.Web;
 
 namespace KadcoMain.Models
 {
-    public class ExchangeRate
+    public class Currency
     {
         public int Id { get; set; }
         public string Country { get; set; }

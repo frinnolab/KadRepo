@@ -13,6 +13,9 @@ namespace KadcoMain.ViewModels
         public IEnumerable<CollectedBill> collectedBills { get; set; }
         public IEnumerable<GFSCode> gFSCodes { get; set; }
 
+        public IEnumerable<Currency> Currencies { get; set; }
+
+
 
         public CollectedBillViewModel()
         {

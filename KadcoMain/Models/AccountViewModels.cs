@@ -109,4 +109,16 @@ namespace KadcoMain.Models
         [Display(Name = "Email")]
         public string Email { get; set; }
     }
+
+    public class GroupedUserViewModel
+    {
+        public List<UserViewModel> Users { get; set; }
+        public List<UserViewModel> Admins { get; set; }
+    }
+    public class UserViewModel
+    {
+        public string Username { get; set; }
+        public string Email { get; set; }
+        public string RoleName { get; set; }
+    }
 }
