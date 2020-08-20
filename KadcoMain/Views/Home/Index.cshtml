@@ -17,9 +17,37 @@
     <div class="header">
         New Bill
     </div>
-    @using (Html.BeginForm("CreateNewBill", "Home", method: FormMethod.Post, htmlAttributes: new { @class = "ui form" }))
+    @using (Html.BeginForm("SaveBill", "Home", method: FormMethod.Post, htmlAttributes: new { @class = "ui form" }))
     {
         @Html.AntiForgeryToken()
+
+        //Currency Select.
+        <div class="three fields">
+            <div class="field">
+                <label>Bill Date</label>
+
+                @Html.TextBoxFor(m => m.collectedBill.BillDate, "{0:DD MMM YYYY}", new { @type = "date" })
+
+            </div>
+
+            <div class="field">
+                <label>Currency</label>
+
+                @Html.DropDownListFor(m => m.collectedBill.GFS_CodeId,
+                new SelectList(Model.gFSCodes, "id", "CodeNumber"), "--Select Currency--",
+                new { @class = "ui dropdown" })
+
+            </div>
+            <div class="field">
+                <label>Currency Rate</label>
+
+                @Html.TextBox("currRateTxt", "Currency Rate", new { @id = "currRateTxt" })
+            </div>
+            @*<div class="field">
+                <label>Rate</label>
+                <input type="text" placeholder="Payment Code">
+            </div>*@
+        </div>
 
         //User inputs
         <div class="three fields row">
@@ -36,13 +64,14 @@
             <div class="field">
                 <label>Payment Code</label>
 
-                @Html.TextBoxFor(m => m.collectedBill.PaymentCode, "", new { @class = "ui input", @type = "text", @placeholder = "Payment Code" })
+                @Html.DropDownListFor(m => m.collectedBill.GFS_CodeId,
+                new SelectList(Model.gFSCodes, "id", "CodeNumber"), "--Select Payment Code--",
+                new { @class = "ui dropdown" })
+
             </div>
         </div>
 
-
-
-        //Cash inputs
+        //GFS Inputs
         <div class="two fields">
             <div class="field">
                 <label>GFS Code</label>
@@ -65,32 +94,7 @@
             </div>
         </div>
 
-        //Bill inputs
-        <div class="three fields">
-            <div class="field">
-                <label>Bill Date</label>
 
-                @Html.TextBoxFor(m => m.collectedBill.BillDate, "{0:DD MMM YYYY}", new { @type = "date" })
-
-            </div>
-
-            <div class="field">
-                <label>Currency</label>
-
-                @Html.DropDownListFor(m => m.collectedBill.Currency_id,
-                   new SelectList(Model.Currencies, "id", "Country"), "--Select Currency--",
-                   new { @class = "ui dropdown curr-d-d", onchange = "getCurrencyRate()" })
-            </div>
-            <div class="field">
-                <label>Currency Rate</label>
-
-                @Html.TextBox("currRateTxt", "Currency Rate", new { @id = "currRateTxt" })
-            </div>
-            @*<div class="field">
-                    <label>Rate</label>
-                    <input type="text" placeholder="Payment Code">
-                </div>*@
-        </div>
 
         <div class="field">
             <label>Total Amount (TZS)</label>
@@ -210,7 +214,7 @@
                                             Request
                                             <i class="right refresh icon"></i>
                                         </a>*@
-                                                <a class="ui right labeled icon button btnControlNo" id=@bill.id href="@Url.Action("SaveToSage", "Home", new { @id = bill.id })">
+                                                <a class="ui right labeled icon button btnControlNo" id=@bill.id href="@Url.Action("GetControlNo", "Home", new { @id = bill.id })">
                                                     Request
                                                     <i class="right refresh icon"></i>
                                                 </a>
@@ -365,5 +369,16 @@
             
         }
 
-         //Post to Sage       
+         //Post to Sage 
+
+        var postToSage = document.querySelector("#postToSageBtn").addEventListener("click",() => {
+            var url = "/Home/SaveToSage/"
+            fetch(url)
+                .then((result) => {
+                    result.json();
+                })
+                .then((data) => {
+                    Console.log(data);
+                })
+        });
     </script>

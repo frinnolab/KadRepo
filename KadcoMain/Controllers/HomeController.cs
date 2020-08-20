@@ -3,7 +3,6 @@ using KadcoMain.Models;
 using KadcoMain.Services;
 using KadcoMain.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.SqlClient;
@@ -11,10 +10,40 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
+
 namespace KadcoMain.Controllers
 {
     public class HomeController : Controller
     {
+
+        //Sage init Fields
+        private Session session;
+        private DBLink mDBLinkCmpRW;
+        private View arInvoiceBatch;
+        private View arInvoiceHeader;
+        private View arInvoiceDetail;
+        private View arInvoicePaymentSchedules;
+        private View arInvoiceHeaderOptFields;
+        private View arInvoiceDetailOptFields;
+        private View arCus;
+        private View ARRECEIPTS3batch;
+        private View ARRECEIPTS3header;
+        private View ARRECEIPTS3detail1;
+        private View ARRECEIPTS3detail2;
+        private View ARRECEIPTS3detail3;
+        private View ARRECEIPTS3detail4;
+        private View ARRECEIPTS3detail5;
+        private View ARRECEIPTS3detail6;
+        private View ARPAYMPOST2;
+        private SqlDataAdapter da;
+        private SqlConnection conn;
+        private SqlCommand cmd;
+        DataSet ds0 = null;
+        DataSet ds1 = null;
+
+        //Sage fields End
+
+
         ApplicationDbContext DB; 
         public HomeController()
         {
@@ -50,143 +79,74 @@ namespace KadcoMain.Controllers
             return View();
         }
 
-        //PROCESS BILLS
-        private int _billId, gfs_id, currency_id, _phoneNumber, gfEdit;
-
-        private decimal totalAmount, _amount, exchangeRate;
-
-        private string gCode, gfCode_;
-
-        //Sage init Fields
-        private Session session;
-        private DBLink mDBLinkCmpRW;
-        private View arInvoiceBatch;
-        private View arInvoiceHeader;
-        private View arInvoiceDetail;
-        private View arInvoicePaymentSchedules;
-        private View arInvoiceHeaderOptFields;
-        private View arInvoiceDetailOptFields;
-        private View arCus;
-        private View ARRECEIPTS3batch;
-        private View ARRECEIPTS3header;
-        private View ARRECEIPTS3detail1;
-        private View ARRECEIPTS3detail2;
-        private View ARRECEIPTS3detail3;
-        private View ARRECEIPTS3detail4;
-        private View ARRECEIPTS3detail5;
-        private View ARRECEIPTS3detail6;
-        private View ARPAYMPOST2;
-        private SqlDataAdapter da;
-        private SqlConnection conn;
-        private SqlCommand cmd;
-        DataSet ds0 = null;
-        DataSet ds1 = null;
-        
-        //Sage fields End
         [HttpPost]
-        public ActionResult CreateNewBill(FormCollection bill_)
+        public ActionResult SaveBill(FormCollection form)
         {
-            var billID = bill_["hiddenID"];
+            string gf_code_str, exchangeRate, currency_name;
 
             //parse ints
-            int.TryParse(billID, out _billId);
-            int.TryParse(bill_["collectedBill.GFS_CodeId"], out gfs_id);
-            int.TryParse(bill_["collectedBill.Currency_id"], out currency_id);
+            int hiddenId, gfsCodeId, CurrencyId;
+            int.TryParse(form["collectedBill.GFS_CodeId"], out gfsCodeId);
+            int.TryParse(form["collectedBill.Currency_id"], out CurrencyId);
+            int.TryParse(form["hiddenID"], out hiddenId);
 
-            decimal.TryParse(bill_["collectedBill.Amount"], out _amount);
-            decimal.TryParse(bill_["collectedBill.TotalAmount"], out totalAmount);
-            decimal.TryParse(bill_["collectedBill.ExchangeRate"], out exchangeRate);
 
+
+            //parse doubles
+            decimal totalAmount_, amount_;
+            decimal.TryParse(form["collectedBill.TotalAmount"], out totalAmount_);
+            decimal.TryParse(form["collectedBill.Amount"], out amount_);
 
             var newBill = new CollectedBill();
-            var gfsCodes = DB.GFSCodes.ToList();
 
 
-            if (gfs_id > 0)
+            //get gfs code string
+            if (gfsCodeId > 0)
             {
-                gCode = DB.GFSCodes.SingleOrDefault(c => c.id == gfs_id).CodeNumber;
+                gf_code_str = DB.GFSCodes.SingleOrDefault(c => c.id == gfsCodeId).CodeNumber;
             }
             else
             {
-                gCode = "Non.";
+                gf_code_str = "Nill";
             }
 
-
-            if (_billId <= 0)
+            //get exchange rate str code string
+            if (CurrencyId > 1)
             {
-                //Add New Bill To DB
-
-                newBill.PayerName = bill_["collectedBill.PayerName"];
-                newBill.PhoneNumber = bill_["collectedBill.PhoneNumber"];
-                newBill.CreatedDate = DateTime.Now;
-                newBill.BillDate = DateTime.Parse(bill_["collectedBill.BillDate"]);
-                newBill.GFSCodeStr = gCode;
-                newBill.GFS_CodeId = gfs_id;
-                newBill.PaymentCode = bill_["collectedBill.PaymentCode"];
-                newBill.Description = bill_["collectedBill.Description"];
-                newBill.Amount = _amount;
-                newBill.Currency_id = currency_id;
-                newBill.TotalAmount = totalAmount;
-                newBill.PaymentDate = DateTime.Now;
-                var a = 0;
-                DB.CollectedBills.Add(newBill);
-                
+                //usd
+                exchangeRate = DB.Currencies.SingleOrDefault(m => m.Id == CurrencyId).Rate.ToString();
+                currency_name = DB.Currencies.SingleOrDefault(m => m.Id == CurrencyId).Country.ToString();
             }
             else
             {
-                int dbID, curr_id;
-                int.TryParse(billID, out dbID);
-
-                int.TryParse(bill_["collectedBill.Currency_id"], out curr_id);
-
-                int.TryParse(bill_["collectedBill.GFS_CodeId"], out gfEdit);
-
-                decimal.TryParse(bill_["collectedBill.Amount"], out _amount);
-                decimal.TryParse(bill_["collectedBill.TotalAmount"], out totalAmount);
-                decimal.TryParse(bill_["collectedBill.ExchangeRate"], out exchangeRate);
-
-                //Convert Bill ID to Int
-
-                var bill = DB.CollectedBills.Single(m => m.id == dbID);
-
-                var currencyID = DB.Currencies.Single(c => c.Id == curr_id);
-
-                bill.PayerName = bill_["collectedBill.PayerName"];
-                bill.PhoneNumber = bill_["collectedBill.PhoneNumber"];
-
-                if ((gfEdit != null) && (gfEdit > 0))
-                {
-                    gfCode_ = DB.GFSCodes.SingleOrDefault(c => c.id == gfEdit).CodeNumber;
-                }
-                else
-                {
-                    gfCode_ = "Nill";
-                }
-
-
-                bill.CreatedDate = DateTime.Now;
-                bill.BillDate = DateTime.Parse(bill_["collectedBill.BillDate"]);
-                bill.GFS_CodeId = gfEdit;
-                bill.GFSCodeStr = gfCode_;
-                bill.GFS_Description = bill_["collectedBill.GFS_Description"];
-                bill.PaymentCode = bill_["collectedBill.PaymentCode"];
-                bill.Description = bill_["collectedBill.Description"];
-                bill.ControlNo = bill_["collectedBill.ControlNo"];
-                bill.Amount = _amount;
-                bill.Currency_id = curr_id;
-                bill.TotalAmount = totalAmount;
-                bill.PaymentDate = DateTime.Now;
-
-                DB.Entry(bill).State = EntityState.Modified;
+                //tzs
+                exchangeRate = DB.Currencies.SingleOrDefault(m => m.Id == 1).Rate.ToString();
+                currency_name = DB.Currencies.SingleOrDefault(m => m.Id == 1).Country.ToString();
             }
+
+            newBill.PayerName = form["collectedBill.PayerName"];
+            newBill.PhoneNumber = form["collectedBill.PhoneNumber"];
+            newBill.PaymentCode = form["collectedBill.PaymentCode"];
+            newBill.Description = form["collectedBill.Description"];
+            newBill.GFS_Description = form["collectedBill.GFS_Description"];
+            newBill.GFSCodeStr = gf_code_str;
+            newBill.BillDate = DateTime.Parse(form["collectedBill.BillDate"]);
+            newBill.PaymentDate = DateTime.Now;
+            newBill.Amount = amount_;
+            newBill.TotalAmount = totalAmount_;
+            newBill.GFS_CodeId = gfsCodeId;
+            //newBill.Currency_Id = CurrencyId;
+            newBill.ExchangeRate = exchangeRate;
+            newBill.Currency_Name = currency_name;
+
+            var a = 0;
+      
+            DB.CollectedBills.Add(newBill);
 
             DB.SaveChanges();
-
             return RedirectToAction("Index", "Home");
         }
-
-
-
+      
         public ActionResult Edit(int id)
         {
             var bill = DB.CollectedBills.SingleOrDefault(c => c.id == id);
@@ -197,9 +157,6 @@ namespace KadcoMain.Controllers
                 collectedBill = bill,
                 gFSCodes = gfCodes
             };
-
-
-
             return View(editBillvm);
         }
 
@@ -271,8 +228,8 @@ namespace KadcoMain.Controllers
         {
             // Create, initialize and open a session.
             session = new Session();
-            session.Init("", "XY", "XY1000", "65A");
-            session.Open("ADMIN", "admin", "TSTDAT", DateTime.Today, 0);
+            session.Init("", "XY", "XY1000", "66A");
+            session.Open("ADMIN", "ADMIN", "KTSTDT", DateTime.Today, 0);
 
             // Open a database link.
             mDBLinkCmpRW = session.OpenDBLink(DBLinkType.Company, DBLinkFlags.ReadWrite);
@@ -298,7 +255,10 @@ namespace KadcoMain.Controllers
             try
             {
 
-                string connectionString = @"Data Source=FRINNOLAB\FRINNOSQLSERVER;Database=kad_test;Trusted_Connection=True;";
+                string connectionString = @"Data Source=FRINNOLAB\FRINNOSQLSERVER;" +
+                    "Initial Catalog=kad_test;"+
+                    "Trusted_Connection=True;"+
+                    "Persist Security Info=True;User ID=sa;Password=1505;";
                 //string connectionString = "Data Source=DESKTOP-031JB5E;Initial Catalog=AuwsaDB;Persist Security Info=True;User ID=sa;Password=Duxte_123;";
                 conn = new SqlConnection(connectionString);
                 SqlCommand cmd0 = new SqlCommand("select Distinct [Billing_Details],[AccountNo],[Bill_Date],[Bill_Ref_Number],[CATEGORY]  from [kad_test].[dbo].[BILLINTGITEM_FINAL_VIEW]", conn);

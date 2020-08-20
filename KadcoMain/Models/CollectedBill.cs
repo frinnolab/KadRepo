@@ -24,8 +24,10 @@ namespace KadcoMain.Models
         public string PhoneNumber { get; set; }
 
         [Display(Name = "Exchange Rate")]
-        public Currency Currency { get; set; }
-        public int? Currency_id { get; set; }
+      //  public Currency Currency { get; set; }
+       // public int? Currency_Id{ get; set; }
+        public string ExchangeRate { get; set; }
+        public string Currency_Name { get; set; }
 
         [Display(Name = "GFS Code")]
         public GFSCode gFS { get; set; }
