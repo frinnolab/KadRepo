@@ -3,6 +3,7 @@ using KadcoMain.Models;
 using KadcoMain.Services;
 using KadcoMain.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.SqlClient;
@@ -54,29 +55,18 @@ namespace KadcoMain.Controllers
             var bills = DB.CollectedBills.OrderByDescending(m => m.id).Take(3).ToList();
             var gfCodes = DB.GFSCodes.ToList();
             var currencies = DB.Currencies.ToList();
+            var paymentCodes = DB.PaymentCodes.ToList();
             var billViewModel = new CollectedBillViewModel
             {
                 collectedBills = bills,
                 gFSCodes = gfCodes,
-                Currencies = currencies
+                Currencies = currencies,
+                PaymentCodes = paymentCodes
+               
 
             };
 
             return View(billViewModel);
-        }
-
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
         }
 
         [HttpPost]
@@ -85,9 +75,10 @@ namespace KadcoMain.Controllers
             string gf_code_str, exchangeRate, currency_name;
 
             //parse ints
-            int hiddenId, gfsCodeId, CurrencyId;
+            int hiddenId, gfsCodeId, CurrencyId, payCodeId;
             int.TryParse(form["collectedBill.GFS_CodeId"], out gfsCodeId);
             int.TryParse(form["collectedBill.Currency_id"], out CurrencyId);
+            int.TryParse(form["collectedBill.PaymentCode_Id"], out payCodeId);
             int.TryParse(form["hiddenID"], out hiddenId);
 
 
@@ -127,6 +118,7 @@ namespace KadcoMain.Controllers
             newBill.PayerName = form["collectedBill.PayerName"];
             newBill.PhoneNumber = form["collectedBill.PhoneNumber"];
             newBill.PaymentCode = form["collectedBill.PaymentCode"];
+            newBill.PaymentCode_Id = payCodeId;
             newBill.Description = form["collectedBill.Description"];
             newBill.GFS_Description = form["collectedBill.GFS_Description"];
             newBill.GFSCodeStr = gf_code_str;
@@ -135,9 +127,10 @@ namespace KadcoMain.Controllers
             newBill.Amount = amount_;
             newBill.TotalAmount = totalAmount_;
             newBill.GFS_CodeId = gfsCodeId;
-            //newBill.Currency_Id = CurrencyId;
+            newBill.Currency_Id = CurrencyId;
             newBill.ExchangeRate = exchangeRate;
             newBill.Currency_Name = currency_name;
+            newBill.CreatedDate = DateTime.Now;
 
             var a = 0;
       
@@ -189,6 +182,30 @@ namespace KadcoMain.Controllers
             var dbNum = 0;
 
             return RedirectToAction("Index");
+        }
+
+        public ActionResult GetGfsCodes(string id)
+        {
+            int gf_id;
+
+            int.TryParse(id, out gf_id);
+
+            var codes = DB.GFSCodes.Where(m => m.Currency_Id == gf_id)
+                .ToList().Take(10);
+
+            return Json(codes, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetPayCodes(string id)
+        {
+            int py_id;
+
+            int.TryParse(id, out py_id);
+
+            var codes = DB.PaymentCodes.Where(m => m.Currency_Id == py_id)
+                .ToList().Take(10);
+
+            return Json(codes, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult SaveToSage()
@@ -358,5 +375,20 @@ namespace KadcoMain.Controllers
                 SageLogger.TraceService(ex.Message + ex.InnerException);
             }
         }
+
+        public ActionResult About()
+        {
+            ViewBag.Message = "Your application description page.";
+
+            return View();
+        }
+
+        public ActionResult Contact()
+        {
+            ViewBag.Message = "Your contact page.";
+
+            return View();
+        }
+
     }
 }

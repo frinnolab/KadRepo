@@ -9,5 +9,6 @@ namespace KadcoMain.Models
     {
         public int id { get; set; }
         public string CodeNumber { get; set; }
+        public int? Currency_Id { get; set; }
     }
 }

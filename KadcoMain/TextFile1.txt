@@ -154,3 +154,30 @@
         }
 
         
+
+
+		@*$.ajax({
+            url: "@Url.Action("GetDDLData", "Employer")",
+            data: {selectedValue:selectedValue},
+            dataType: "json",
+            type: "GET",
+            error: function () {
+            alert(" An error occurred.");
+            },
+            success: function (data) {
+            var optionhtml1 = '<option value="' +
+                 0 + '">
+                ' + "--Select State--" + '
+            </option>';
+            $(".ddlProjectvalue").append(optionhtml1);
+
+            $.each(data, function (i) {
+
+            var optionhtml = '<option value="' +
+                data[i].Value + '">
+                ' +data[i].Text + '
+            </option>';
+            $(".ddlProjectvalue").append(optionhtml);
+            });
+            }
+            });*@

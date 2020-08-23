@@ -25,7 +25,7 @@ namespace KadcoMain.Models
 
         [Display(Name = "Exchange Rate")]
       //  public Currency Currency { get; set; }
-       // public int? Currency_Id{ get; set; }
+        public int? Currency_Id{ get; set; }
         public string ExchangeRate { get; set; }
         public string Currency_Name { get; set; }
 
@@ -34,13 +34,12 @@ namespace KadcoMain.Models
         public int? GFS_CodeId { get; set; }
         public string GFSCodeStr { get; set; }
 
-
         [Display(Name = "GFS Description")]
+
         public string GFS_Description { get; set; }
 
-
-        //[Display(Name = "Payment Code")]
         public string PaymentCode { get; set; }
+        public int? PaymentCode_Id { get; set; }
 
 
         [Display(Name = "Control No.")]

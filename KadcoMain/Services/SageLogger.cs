@@ -13,7 +13,7 @@ namespace KadcoMain.Services
 
             //set up a filestream
             
-            FileStream fs = new FileStream(@"D:\PROJECTS\WORK\KADCO\sagelog.txt", FileMode.OpenOrCreate, FileAccess.Write);
+            FileStream fs = new FileStream(@"D:\PROJECTS\CODE\WORK\KADCO\log.txt", FileMode.OpenOrCreate, FileAccess.Write);
             //D:\PROJECTS\WORK\KADCO
 
             //set up a streamwriter for adding text

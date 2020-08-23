@@ -10,10 +10,12 @@ namespace KadcoMain.ViewModels
     {
 
         public CollectedBill collectedBill { get; set; }
-        public IEnumerable<CollectedBill> collectedBills { get; set; }
-        public IEnumerable<GFSCode> gFSCodes { get; set; }
+        public List<CollectedBill> collectedBills { get; set; }
+        public List<GFSCode> gFSCodes { get; set; }
 
-        public IEnumerable<Currency> Currencies { get; set; }
+        public List<Currency> Currencies { get; set; }
+
+        public List<PaymentCode> PaymentCodes { get; set; }
 
 
 

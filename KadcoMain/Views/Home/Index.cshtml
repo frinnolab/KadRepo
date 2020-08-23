@@ -11,120 +11,111 @@
 
     @* Bill Modal *@
 
-<div class="ui modal">
+    <div class="ui modal">
 
-    <i class="close icon"></i>
-    <div class="header">
-        New Bill
+        <i class="close icon"></i>
+        <div class="header">
+            New Bill
+        </div>
+        @using (Html.BeginForm("SaveBill", "Home", method: FormMethod.Post, htmlAttributes: new { @class = "ui form" }))
+        {
+            @Html.AntiForgeryToken()
+
+            //Currency Select.
+            <div class="three fields">
+                <div class="field">
+                    <label>Bill Date</label>
+                    @Html.TextBoxFor(m => m.collectedBill.BillDate, "{0:DD MMM YYYY}", new { @type = "date" })
+                </div>
+
+                <div class="field">
+                    <label>Currency</label>
+                    @Html.DropDownListFor(m => m.collectedBill.Currency_Id,
+                    new SelectList(Model.Currencies, "id", "Country"), "--Select Currency--",
+                    new { @class = "ui dropdown", onchange = "getContents(this.value)"  })
+                </div>
+                <div class="field">
+                    <label>Currency Rate</label>
+
+                    @Html.TextBox("currRateTxt", "Currency Rate", new { @id = "currRateTxt" })
+                </div>
+             
+            </div>
+
+            //User inputs
+            <div class="three fields row">
+                <div class="field">
+                    <label>Payer name</label>
+
+                    @Html.TextBoxFor(m => m.collectedBill.PayerName, "", new { @class = "ui input", @type = "text", @placeholder = "Payer Name" })
+                </div>
+                <div class="field">
+                    <label>Phone Number</label>
+
+                    @Html.TextBoxFor(m => m.collectedBill.PhoneNumber, "", new { @class = "ui input", @type = "text", @placeholder = "Phone Number" })
+                </div>
+                <div class="field">
+                    <label>Payment Code</label>
+
+                    @Html.DropDownListFor(m => m.collectedBill.PaymentCode_Id,
+                    new SelectList(Model.PaymentCodes, "id", "CodeNumber"), "--Select Payment Codes--",
+                    new { @class = "ui dropdown" })
+
+                </div>
+            </div>
+
+            //GFS Inputs
+            <div class="two fields">
+                <div class="field">
+                    <label>GFS Code</label>
+
+                    @Html.DropDownListFor(m => m.collectedBill.GFS_CodeId,
+                   new SelectList(Model.gFSCodes, "id", "CodeNumber"), "--Select GFS Code--",
+                   new { @class = "ui dropdown" })
+
+                </div>
+
+                <div class="field">
+                    <label>GFS Description</label>
+                    @Html.TextBoxFor(m => m.collectedBill.GFS_Description, "", new { @type = "text", @placeholder = "GFS Description" })
+                </div>
+
+                <div class="field">
+                    <label>Amount Paid</label>
+
+                    @Html.TextBoxFor(m => m.collectedBill.Amount, "", new { @type = "number", @placeholder = "Amount Paid", @value = 0, onchange = "amountChange(this.value)" })
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Total Amount (TZS)</label>
+                @Html.TextBoxFor(m => m.collectedBill.TotalAmount, "", new { @type = "number", @placeholder = "Total Amount Paid", @value = 0 })
+
+
+                <p></p>
+
+            </div>
+
+            <div class="field">
+                <label>Description</label>
+
+                @Html.TextAreaFor(m => m.collectedBill.Description, new { @rows = "2" })
+
+                @Html.Hidden("hiddenID", Model.collectedBill.id)
+            </div>
+
+            <div class="actions">
+                <div class="ui black deny button">
+                    Discard
+                </div>
+                <button type="submit" class="ui positive button">
+                    Create Bill
+                </button>
+            </div>
+
+
+        }
     </div>
-    @using (Html.BeginForm("SaveBill", "Home", method: FormMethod.Post, htmlAttributes: new { @class = "ui form" }))
-    {
-        @Html.AntiForgeryToken()
-
-        //Currency Select.
-        <div class="three fields">
-            <div class="field">
-                <label>Bill Date</label>
-
-                @Html.TextBoxFor(m => m.collectedBill.BillDate, "{0:DD MMM YYYY}", new { @type = "date" })
-
-            </div>
-
-            <div class="field">
-                <label>Currency</label>
-
-                @Html.DropDownListFor(m => m.collectedBill.GFS_CodeId,
-                new SelectList(Model.gFSCodes, "id", "CodeNumber"), "--Select Currency--",
-                new { @class = "ui dropdown" })
-
-            </div>
-            <div class="field">
-                <label>Currency Rate</label>
-
-                @Html.TextBox("currRateTxt", "Currency Rate", new { @id = "currRateTxt" })
-            </div>
-            @*<div class="field">
-                <label>Rate</label>
-                <input type="text" placeholder="Payment Code">
-            </div>*@
-        </div>
-
-        //User inputs
-        <div class="three fields row">
-            <div class="field">
-                <label>Payer name</label>
-
-                @Html.TextBoxFor(m => m.collectedBill.PayerName, "", new { @class = "ui input", @type = "text", @placeholder = "Payer Name" })
-            </div>
-            <div class="field">
-                <label>Phone Number</label>
-
-                @Html.TextBoxFor(m => m.collectedBill.PhoneNumber, "", new { @class = "ui input", @type = "text", @placeholder = "Phone Number" })
-            </div>
-            <div class="field">
-                <label>Payment Code</label>
-
-                @Html.DropDownListFor(m => m.collectedBill.GFS_CodeId,
-                new SelectList(Model.gFSCodes, "id", "CodeNumber"), "--Select Payment Code--",
-                new { @class = "ui dropdown" })
-
-            </div>
-        </div>
-
-        //GFS Inputs
-        <div class="two fields">
-            <div class="field">
-                <label>GFS Code</label>
-
-                @Html.DropDownListFor(m => m.collectedBill.GFS_CodeId,
-               new SelectList(Model.gFSCodes, "id", "CodeNumber"), "--Select GFS Code--",
-               new { @class = "ui dropdown" })
-
-            </div>
-
-            <div class="field">
-                <label>GFS Description</label>
-                @Html.TextBoxFor(m => m.collectedBill.GFS_Description, "", new { @type = "text", @placeholder = "GFS Description" })
-            </div>
-
-            <div class="field">
-                <label>Amount Paid</label>
-
-                @Html.TextBoxFor(m => m.collectedBill.Amount, "", new { @type = "number", @placeholder = "Amount Paid", @value = 0, onchange = "amountChange()" })
-            </div>
-        </div>
-
-
-
-        <div class="field">
-            <label>Total Amount (TZS)</label>
-            @Html.TextBoxFor(m => m.collectedBill.TotalAmount, "", new { @type = "number", @placeholder = "Total Amount Paid", @value = 0 })
-
-
-            <p></p>
-
-        </div>
-
-        <div class="field">
-            <label>Description</label>
-
-            @Html.TextAreaFor(m => m.collectedBill.Description, new { @rows = "2" })
-
-            @Html.Hidden("hiddenID", Model.collectedBill.id)
-        </div>
-
-        <div class="actions">
-            <div class="ui black deny button">
-                Discard
-            </div>
-            <button type="submit" class="ui positive button">
-                Create Bill
-            </button>
-        </div>
-
-
-    }
-</div>
 
     @* Bill Modal End *@
 
@@ -211,9 +202,9 @@
                                                 //href="@Url.Action("GetControlNo", "Home", new { @id = bill.id })"
 
                                                 @*<a class="ui right labeled icon button btnControlNo" id=@bill.id href="@Url.Action("GetControlNo", "Home", new { @id = bill.id })">
-                                            Request
-                                            <i class="right refresh icon"></i>
-                                        </a>*@
+                                                        Request
+                                                        <i class="right refresh icon"></i>
+                                                    </a>*@
                                                 <a class="ui right labeled icon button btnControlNo" id=@bill.id href="@Url.Action("GetControlNo", "Home", new { @id = bill.id })">
                                                     Request
                                                     <i class="right refresh icon"></i>
@@ -313,72 +304,179 @@
     }
 </style>
 
-    <script type="text/javascript"> 
-        $(document).ready(() => {
-             //alert('Test');
-            //Data Table
-            $('#billTable').DataTable({
-                "pageLength": 3
-            });
+<script type="text/javascript">
 
-            $('#billTable').on( 'click', 'tbody td', function () {
-              if ( table.data().length !== 0 ) {
-                editor.inline( this );
-              }
-            } );
-
-
-            //
-            $('#newBill').on('click', () => {
-                $('.ui.modal').modal('show');
-            });
+    //onchange = "getContents(this.value)"
+    $(document).ready(() => {
+        //alert('Test');
+        //Data Table
+        $('#billTable').DataTable({
+            "pageLength": 3
         });
 
-        
-        //process currency rate 
-        var totalAmountTxt = document.querySelector("#collectedBill_TotalAmount");
-        var amount;
-        function amountChange() {
-            amount = document.querySelector("#collectedBill_Amount").value;
+        $('#billTable').on('click', 'tbody td', function () {
+            if (table.data().length !== 0) {
+                editor.inline(this);
+            }
+        });
 
-         }
-        
 
-        function getCurrencyRate() {
+        //
+        $('#newBill').on('click', () => {
+            $('.ui.modal').modal('show');
+        });
 
-            var currId = document.querySelector("#collectedBill_Currency_id").value;
-            var url = "/Home/GetCurrRate/" + currId;
+        //Process Bill Form
+        getContents(val);
 
-            fetch(url)
-                .then(Result => {
-                    return Result.json();
-                })
-                .then(data => {
-                    var currText = document.querySelector("#currRateTxt");
-                    var totalAmount;
-                    currText.setAttribute("value", data);
 
-                    totalAmount = parseFloat(data) * parseFloat(amount);
+    });
 
-                    totalAmountTxt.setAttribute("value", totalAmount);
-                    totalAmountTxt.setAttribute("placeholder", totalAmount);
 
-                    
+    //process currency rate
+    var totalAmountTxt = document.querySelector("#collectedBill_TotalAmount");
+    var amount, gfDrop, rate;
+    function amountChange() {
+        amount = document.querySelector("#collectedBill_Amount").value;
+        rate = document.querySelector("#currRateTxt").value;
 
+        var finalAmount = parseFloat(amount) * parseFloat(rate);
+
+        totalAmountTxt.setAttribute("value", finalAmount);
+
+        totalAmountTxt.textContent = finalAmount;
+    }
+
+
+    function getContents(val) {
+        getCurrencyRate(val);
+        getGFCodes(val);
+        getPayCodes(val);
+    }
+
+    function getCurrencyRate(id) {
+
+        url_ = "/Home/GetCurrRate/" + id;
+        $.ajax({
+            url: url_,
+            data: {id:id},
+            dataType: "json",
+            type: "GET",
+            error: function () {
+            alert(" An error occurred.");
+                },
+            success: function (data) {
+                var currText = document.querySelector("#currRateTxt");
+                currText.setAttribute("value", data);
+                }
+        });
+
+        //fetch(url)
+        //    .then((response) => {
+        //        return response.json();
+        //    })
+        //    .then((data) => {
+        //        var currText = document.querySelector("#currRateTxt");
+        //        var totalAmount;
+        //        currText.setAttribute("value", data);
+
+        //        // totalAmount = parseFloat(data) * parseFloat(amount);
+
+        //        //totalAmountTxt.setAttribute("value", totalAmount);
+        //        //totalAmountTxt.setAttribute("placeholder", totalAmount);
+        //    });
+    }
+
+    function getGFCodes(id) {
+        var url_ = "/Home/GetGfsCodes/" + id;
+
+        $.ajax({
+            url: url_,
+            data: { id: id },
+            dataType: "json",
+            type: "GET",
+            error: () => {
+                alert("GFS Codes Error!.");
+            },
+            success: (data) => {
+                gfDrop = document.querySelector("#collectedBill_GFS_CodeId");
+
+                while (gfDrop.firstChild) {
+                    gfDrop.removeChild(gfDrop.firstChild);
+                }
+
+                var gfoption = '<option value="' + 0 + '">' +
+                    "--Select GFS Codes--" +
+                    '</option>';
+
+                $("#collectedBill_GFS_CodeId").append(gfoption);
+
+                $.each(data, (item) => {
+
+                    //console.log(item);
+                    var gfoptions = '<option value="' +
+                        data[item].id + '">' +
+                        data[item].CodeNumber +
+                        '</option>';
+
+                    $("#collectedBill_GFS_CodeId").append(gfoptions);
                 });
-            
-        }
+            }
 
-         //Post to Sage 
-
-        var postToSage = document.querySelector("#postToSageBtn").addEventListener("click",() => {
-            var url = "/Home/SaveToSage/"
-            fetch(url)
-                .then((result) => {
-                    result.json();
-                })
-                .then((data) => {
-                    Console.log(data);
-                })
         });
-    </script>
+    }
+
+    function getPayCodes(id) {
+        var url_ = "/Home/GetPayCodes/" + id;
+
+        $.ajax({
+            url: url_,
+            data: { id: id },
+            dataType: "json",
+            type: "GET",
+            error: () => {
+                alert("Payment Codes Error!.");
+            },
+            success: (data) => {
+                payDrop = document.querySelector("#collectedBill_PaymentCode_Id");
+
+                while (payDrop.firstChild) {
+                    payDrop.removeChild(payDrop.firstChild);
+                }
+
+                var payOption = '<option value="' + 0 + '">' +
+                    "--Select Payment Codes--" +
+                    '</option>';
+
+                $("#collectedBill_PaymentCode_Id").append(payOption);
+
+                //debugger
+
+                $.each(data, (item) => {
+                    var payOptions = '<option value="' +
+                        data[item].Id + '">' +
+                        data[item].CodeNumber +
+                        '</option>';
+
+                    $("#collectedBill_PaymentCode_Id").append(payOptions);
+                });
+            }
+
+        });
+    }
+
+    //Post to Sage
+    var postToSage = document.querySelector("#postToSageBtn").addEventListener("click", () => {
+        var url = "/Home/SaveToSage/"
+        fetch(url)
+            .then((result) => {
+                result.json();
+            })
+            .then((data) => {
+                Console.log(data);
+            })
+    });
+</script>
+
+
+ 
