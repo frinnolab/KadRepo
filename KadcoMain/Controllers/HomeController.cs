@@ -72,7 +72,7 @@ namespace KadcoMain.Controllers
         [HttpPost]
         public ActionResult SaveBill(FormCollection form)
         {
-            string gf_code_str, exchangeRate, currency_name;
+            string gf_code_str, exchangeRate, currency_name, payCodeStr;
 
             //parse ints
             int hiddenId, gfsCodeId, CurrencyId, payCodeId;
@@ -80,6 +80,8 @@ namespace KadcoMain.Controllers
             int.TryParse(form["collectedBill.Currency_id"], out CurrencyId);
             int.TryParse(form["collectedBill.PaymentCode_Id"], out payCodeId);
             int.TryParse(form["hiddenID"], out hiddenId);
+
+
 
 
 
@@ -101,6 +103,16 @@ namespace KadcoMain.Controllers
                 gf_code_str = "Nill";
             }
 
+            //get paycode code string
+            if (payCodeId > 0)
+            {
+                payCodeStr = DB.PaymentCodes.SingleOrDefault(c => c.Id == payCodeId).CodeNumber;
+            }
+            else
+            {
+                payCodeStr = "No Code";
+            }
+
             //get exchange rate str code string
             if (CurrencyId > 1)
             {
@@ -115,26 +127,60 @@ namespace KadcoMain.Controllers
                 currency_name = DB.Currencies.SingleOrDefault(m => m.Id == 1).Country.ToString();
             }
 
-            newBill.PayerName = form["collectedBill.PayerName"];
-            newBill.PhoneNumber = form["collectedBill.PhoneNumber"];
-            newBill.PaymentCode = form["collectedBill.PaymentCode"];
-            newBill.PaymentCode_Id = payCodeId;
-            newBill.Description = form["collectedBill.Description"];
-            newBill.GFS_Description = form["collectedBill.GFS_Description"];
-            newBill.GFSCodeStr = gf_code_str;
-            newBill.BillDate = DateTime.Parse(form["collectedBill.BillDate"]);
-            newBill.PaymentDate = DateTime.Now;
-            newBill.Amount = amount_;
-            newBill.TotalAmount = totalAmount_;
-            newBill.GFS_CodeId = gfsCodeId;
-            newBill.Currency_Id = CurrencyId;
-            newBill.ExchangeRate = exchangeRate;
-            newBill.Currency_Name = currency_name;
-            newBill.CreatedDate = DateTime.Now;
+            //EDIT AND UPDATE FIELD
 
-            var a = 0;
-      
-            DB.CollectedBills.Add(newBill);
+            if (hiddenId > 0)
+            {
+                if (ModelState.IsValid)
+                {
+                    var editBill = DB.CollectedBills.SingleOrDefault(m => m.id == hiddenId);
+
+                    editBill.PayerName = form["collectedBill.PayerName"];
+                    editBill.PhoneNumber = form["collectedBill.PhoneNumber"];
+                    editBill.PaymentCode = payCodeStr;
+                    editBill.PaymentCode_Id = payCodeId;
+                    editBill.Description = form["collectedBill.Description"];
+                    editBill.GFS_Description = form["collectedBill.GFS_Description"];
+                    editBill.GFSCodeStr = gf_code_str;
+                    editBill.BillDate = DateTime.Parse(form["collectedBill.BillDate"]);
+                    editBill.PaymentDate = DateTime.Now;
+                    editBill.Amount = amount_;
+                    editBill.TotalAmount = totalAmount_;
+                    editBill.GFS_CodeId = gfsCodeId;
+                    editBill.Currency_Id = CurrencyId;
+                    editBill.ExchangeRate = exchangeRate;
+                    editBill.Currency_Name = currency_name;
+                    editBill.CreatedDate = DateTime.Now;
+
+                }
+                
+            }
+            else
+            {
+                //New Bill Insert
+                newBill.PayerName = form["collectedBill.PayerName"];
+                newBill.PhoneNumber = form["collectedBill.PhoneNumber"];
+                newBill.PaymentCode = payCodeStr;
+                newBill.PaymentCode_Id = payCodeId;
+                newBill.Description = form["collectedBill.Description"];
+                newBill.GFS_Description = form["collectedBill.GFS_Description"];
+                newBill.GFSCodeStr = gf_code_str;
+                newBill.BillDate = DateTime.Parse(form["collectedBill.BillDate"]);
+                newBill.PaymentDate = DateTime.Now;
+                newBill.Amount = amount_;
+                newBill.TotalAmount = totalAmount_;
+                newBill.GFS_CodeId = gfsCodeId;
+                newBill.Currency_Id = CurrencyId;
+                newBill.ExchangeRate = exchangeRate;
+                newBill.Currency_Name = currency_name;
+                newBill.CreatedDate = DateTime.Now;
+
+                var a = 0;
+
+                DB.CollectedBills.Add(newBill);
+            }
+
+            
 
             DB.SaveChanges();
             return RedirectToAction("Index", "Home");
@@ -144,11 +190,15 @@ namespace KadcoMain.Controllers
         {
             var bill = DB.CollectedBills.SingleOrDefault(c => c.id == id);
             var gfCodes = DB.GFSCodes.ToList();
+            var currencies = DB.Currencies.ToList();
+            var paycodes = DB.PaymentCodes.ToList();
 
             var editBillvm = new CollectedBillViewModel
             {
                 collectedBill = bill,
-                gFSCodes = gfCodes
+                gFSCodes = gfCodes,
+                PaymentCodes = paycodes,
+                Currencies = currencies
             };
             return View(editBillvm);
         }

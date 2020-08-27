@@ -5,8 +5,10 @@
 
 <div class="ui container index-container">
     <div id="mainTextContainer">
-        <h1 class="textBig">KADCO PORTAL</h1>
-        <p class="lead">Create a New Bill, Request for Control Number and Post to Sage.</p>
+
+        <img class="logo-kdc" src="~/Content/images/kadco_logo.jpg" />
+        <h1 class="textSmall">SAGE PORTAL</h1>
+        @*<p class="lead">Create a New Bill, Request for Control Number and Post to Sage.</p>*@
     </div>
 
     @* Bill Modal *@
@@ -90,7 +92,6 @@
             <div class="field">
                 <label>Total Amount (TZS)</label>
                 @Html.TextBoxFor(m => m.collectedBill.TotalAmount, "", new { @type = "number", @placeholder = "Total Amount Paid", @value = 0 })
-
 
                 <p></p>
 
@@ -255,9 +256,17 @@
 </div>
 
 <style>
+    .logo-kdc{
+        max-width:20%;
+    }
 
     .textBig {
         font-size: 60px;
+    }
+
+    .textSmall{
+        font-size: 20px;
+        margin:3px;
     }
 
     .index-container {
